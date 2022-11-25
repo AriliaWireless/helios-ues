@@ -48,14 +48,22 @@ namespace Arilia {
                     auto Payload = Message[OpenWifi::uCentralProtocol::PAYLOAD];
                     if(Payload.contains("state")) {
                         auto State = Payload["state"];
-                        auto Interfaces = State["interfaces"];
-                        for(const auto &interface:Interfaces) {
-                            const auto & ssids = interface["ssids"];
-                            for(const auto &ssid:ssids) {
-                                const auto & associations = ssid["associations"];
-                                for(const auto &association:associations) {
-                                    std::string Station = association["station"];
-                                    std::cout << "Station: " << Station << std::endl;
+                        if(State.contains("interfaces")) {
+                            auto Interfaces = State["interfaces"];
+                            for (const auto &interface: Interfaces) {
+                                if(interface.contains("ssids")) {
+                                    const auto &ssids = interface["ssids"];
+                                    for (const auto &ssid: ssids) {
+                                        if(ssid.contains("associations")) {
+                                            const auto &associations = ssid["associations"];
+                                            for (const auto &association: associations) {
+                                                if(association.contains("station")) {
+                                                    std::string Station = association["station"];
+                                                    std::cout << "Station: " << Station << std::endl;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
