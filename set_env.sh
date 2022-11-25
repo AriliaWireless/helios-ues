@@ -1,4 +1,4 @@
 #!/bin/bash
 
-export OWGW_CONFIG=`pwd`
-export OWGW_ROOT=`pwd`
+export OWUELOCATOR_CONFIG=`pwd`
+export OWUELOCATOR_ROOT=`pwd`
