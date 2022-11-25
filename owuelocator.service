@@ -1,13 +1,13 @@
 [Unit]
-Description=OpenWiFi Gateway Service
+Description=OpenWiFi UELocator Service
 After=network-online.target docker.service
 Wants=network-online.target
 
 [Service]
 Type=simple
-Environment="OWGW_ROOT=/home/admin/dev/wlan-cloud-ucentralgw"
-ExecStart=/home/admin/dev/wlan-cloud-ucentralgw/cmake-build/owgw
-WorkingDirectory=/home/admin/dev/wlan-cloud-ucentralgw
+Environment="OWUELOCATOR_ROOT=/home/admin/dev/wlan-cloud-uelocator"
+ExecStart=/home/admin/dev/wlan-cloud-uelocator/cmake-build/owuelocator
+WorkingDirectory=/home/admin/dev/wlan-cloud-uelocator
 # ExecReload=/bin/kill -s HUP $MAINPID
 User=admin
 # TimeoutSec=0
