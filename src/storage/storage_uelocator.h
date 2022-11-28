@@ -27,6 +27,7 @@ typedef Poco::Tuple<
 
 		bool Upgrade(uint32_t from, uint32_t &to) override;
 		void Initialize();
+        bool UpdateUE(const std::string &UE, const LOCObjects::UELocation &L);
 	};
 
 }

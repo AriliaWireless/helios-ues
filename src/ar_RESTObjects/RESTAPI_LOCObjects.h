@@ -14,6 +14,8 @@ namespace Arilia::LOCObjects {
         std::string         AP;
         std::string         system;
         std::uint64_t       reported=0;
+        std::string         BSSID;
+        std::string         SSID;
 
         void to_json(Poco::JSON::Object &Obj) const;
         bool from_json(const Poco::JSON::Object::Ptr &Obj);

@@ -8,7 +8,13 @@
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
 
+#include <framework/utils.h>
+
+#include <ar_RESTObjects/RESTAPI_LOCObjects.h>
+
 #include <nlohmann/json.hpp>
+
+#include <StorageService.h>
 
 namespace Arilia {
 
@@ -40,8 +46,12 @@ namespace Arilia {
             try {
                 nlohmann::json Message = nlohmann::json::parse(Msg->Payload);
 
+                std::string Host;
                 if(Message.contains(OpenWifi::uCentralProtocol::SYSTEM)) {
                     auto System = Message[OpenWifi::uCentralProtocol::SYSTEM];
+                    if(System.contains("host")) {
+                        Host = System["host"];
+                    }
                 }
 
                 if(Message.contains(OpenWifi::uCentralProtocol::PAYLOAD)) {
@@ -54,12 +64,30 @@ namespace Arilia {
                                 if(interface.contains("ssids")) {
                                     const auto &ssids = interface["ssids"];
                                     for (const auto &ssid: ssids) {
+                                        std::string SSID;
+                                        if(ssid.contains("ssid"))
+                                            SSID = ssid["ssid"];
                                         if(ssid.contains("associations")) {
                                             const auto &associations = ssid["associations"];
                                             for (const auto &association: associations) {
+
                                                 if(association.contains("station")) {
                                                     std::string Station = association["station"];
-                                                    std::cout << "Station: " << Station << std::endl;
+                                                    OpenWifi::Utils::NormalizeMac(Station);
+                                                    std::string BSSID;
+                                                    if(association.contains("bssid")) {
+                                                        BSSID = association["bssid"];
+                                                        OpenWifi::Utils::NormalizeMac(BSSID);
+                                                    }
+                                                    Arilia::LOCObjects::UELocation  Location{ .AP = Msg->Key,
+                                                                                       .system = Host,
+                                                                                       .reported = OpenWifi::Utils::Now(),
+                                                                                       .BSSID = BSSID,
+                                                                                       .SSID = SSID };
+
+                                                    std::cout << "Station: " << Station << " AP: " << Msg->Key << " BSSID: "
+                                                        <<  BSSID << "  SSID: " << SSID << std::endl;
+                                                    OpenWifi::StorageService()->UELocatorDB().UpdateUE(Station,Location);
                                                 }
                                             }
                                         }

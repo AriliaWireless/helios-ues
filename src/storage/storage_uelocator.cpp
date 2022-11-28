@@ -5,6 +5,7 @@
 #include "storage_uelocator.h"
 
 #include "framework/RESTAPI_utils.h"
+#include <framework/utils.h>
 #include "fmt/format.h"
 
 namespace Arilia {
@@ -41,6 +42,31 @@ namespace Arilia {
 		}
 		return true;
 	}
+
+    bool UELocatorDB::UpdateUE(const std::string &UE, const LOCObjects::UELocation &L) {
+        try {
+            LOCObjects::UELocationEntry Existing;
+
+            if(GetRecord("MAC", UE, Existing)) {
+                Existing.lastReport = OpenWifi::Utils::Now();
+                Existing.locations.emplace(begin(Existing.locations),L);
+                if(Existing.locations.size()>5)
+                    Existing.locations.pop_back();
+                UpdateRecord("MAC",UE,Existing);
+            } else {
+                Existing.locations.emplace_back(L);
+                Existing.lastReport = Existing.created = OpenWifi::Utils::Now();
+                Existing.MAC = UE;
+                CreateRecord(Existing);
+            }
+            return true;
+        } catch( const Poco::Exception &E) {
+            Logger().log(E);
+        } catch(...) {
+
+        }
+        return false;
+    }
 }
 
 template<> void ORM::DB<Arilia::UELocatorRecordTuple, Arilia::LOCObjects::UELocationEntry>::Convert(const Arilia::UELocatorRecordTuple &In, Arilia::LOCObjects::UELocationEntry &Out) {

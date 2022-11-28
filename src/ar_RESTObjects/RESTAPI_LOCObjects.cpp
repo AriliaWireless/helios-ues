@@ -14,6 +14,8 @@ namespace Arilia::LOCObjects {
         field_to_json(Obj,"AP", AP);
         field_to_json(Obj,"system", system);
         field_to_json(Obj,"reported", reported);
+        field_to_json(Obj,"BSSID", BSSID);
+        field_to_json(Obj,"SSID", SSID);
     }
 
     bool UELocation::from_json(const Poco::JSON::Object::Ptr &Obj) {
@@ -21,6 +23,8 @@ namespace Arilia::LOCObjects {
             field_from_json(Obj,"AP", AP);
             field_from_json(Obj,"system", system);
             field_from_json(Obj,"reported", reported);
+            field_from_json(Obj,"BSSID", BSSID);
+            field_from_json(Obj,"SSID", SSID);
             return true;
         } catch (...) {
         }
