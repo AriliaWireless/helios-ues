@@ -67,6 +67,23 @@ namespace Arilia {
         }
         return false;
     }
+
+    bool UELocatorDB::RemoveOldUEs(std::uint64_t MaximumDays) {
+        try {
+            Poco::Data::Session     Sess = Pool_.get();
+            Poco::Data::Statement   Delete(Sess);
+
+            std::uint64_t Date = OpenWifi::Utils::Now() - (MaximumDays*24*60*60);
+
+            std::string St1{"delete from " + TableName_ + " where created<?"};
+            Delete << ConvertParams(St1), Poco::Data::Keywords::use(Date);
+            Delete.execute();
+            return true;
+        } catch (const Poco::Exception &E) {
+            Logger().log(E);
+        }
+        return false;
+    }
 }
 
 template<> void ORM::DB<Arilia::UELocatorRecordTuple, Arilia::LOCObjects::UELocationEntry>::Convert(const Arilia::UELocatorRecordTuple &In, Arilia::LOCObjects::UELocationEntry &Out) {

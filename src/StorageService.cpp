@@ -38,9 +38,12 @@ namespace OpenWifi {
 
     void Archiver::onTimer([[maybe_unused]] Poco::Timer &timer) {
         Utils::SetThreadName("strg-arch");
+
+        std::uint64_t MaximumAge_ = MicroServiceConfigGetInt("archiver.maximumage",7);
+
         Poco::Logger &logger = Poco::Logger::get("STORAGE-ARCHIVER");
-        logger.information("Squiggy the DB: removing old tokens.");
-//        StorageService()->ActionLinksDB().CleanOldActionLinks();
+        logger.information("Squiggy the DB: removing old UEs.");
+        StorageService()->UELocatorDB().RemoveOldUEs(MaximumAge_);
     }
 
 }
