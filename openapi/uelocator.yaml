@@ -1,0 +1,417 @@
+openapi: 3.0.1
+info:
+  title: OpenWiFi Analytics Service
+  description: Definitions and APIs to analyze OpenWiFi network.
+  version: 2.6.0
+  license:
+    name: BSD3
+    url: https://github.com/Telecominfraproject/wlan-cloud-ucentralgw/blob/master/LICENSE
+
+servers:
+  - url: 'https://localhost:16009/api/v1'
+
+security:
+  - bearerAuth: []
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    NotFound:
+      $ref: 'https://github.com/Telecominfraproject/wlan-cloud-ucentralsec/blob/main/openpapi/owsec.yaml#/components/responses/NotFound'
+    Unauthorized:
+      $ref: 'https://github.com/Telecominfraproject/wlan-cloud-ucentralsec/blob/main/openpapi/owsec.yaml#/components/responses/Unauthorized'
+    Success:
+      $ref: 'https://github.com/Telecominfraproject/wlan-cloud-ucentralsec/blob/main/openpapi/owsec.yaml#/components/responses/Success'
+    BadRequest:
+      $ref: 'https://github.com/Telecominfraproject/wlan-cloud-ucentralsec/blob/main/openpapi/owsec.yaml#/components/responses/BadRequest'
+
+  schemas:
+
+    UElocation:
+      type: object
+      properties:
+        gw:
+          type: string
+        serialNumber:
+          type: string
+        lastContact:
+          type: integer
+          format: int64
+
+    APlocation:
+      type: object
+      properties:
+        gw:
+          type: string
+        lastContact:
+          type: integer
+          format: int64
+
+    UEinfo:
+      type: object
+      properties:
+        ue:
+          type: string
+        lastContact:
+          type: integer
+          format: int64
+
+    #########################################################################################
+    ##
+    ## These are endpoints that all services in the OPenWiFI stack must provide
+    ##
+    #########################################################################################
+    AnyPayload:
+      type: object
+      properties:
+        Document:
+          type: string
+
+    StringList:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            type: string
+
+    TagValuePair:
+      type: object
+      properties:
+        tag:
+          type: string
+        value:
+          type: string
+
+    TagValuePairList:
+      type: object
+      properties:
+        tagList:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    TagIntPair:
+      type: object
+      properties:
+        tag:
+          type: string
+        value:
+          type: integer
+          format: int64
+
+    TagIntPairList:
+      type: object
+      properties:
+        tagList:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagIntPair'
+
+    SystemCommandDetails:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - setloglevels
+            - getloglevels
+            - getSubSystemNames
+            - getLogLevelNames
+            - stats
+        parameters:
+          oneOf:
+            - $ref: '#/components/schemas/StringList'
+            - $ref: '#/components/schemas/TagValuePairList'
+
+    SystemCommandResults:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/StringList'
+        - $ref: '#/components/schemas/TagValuePairList'
+
+    NoteInfo:
+      type: object
+      properties:
+        created:
+          type: integer
+          format: int64
+        createdBy:
+          type: string
+        note:
+          type: string
+
+    SystemInfoResults:
+      type: object
+      properties:
+        version:
+          type: string
+        uptime:
+          type: integer
+          format: integer64
+        start:
+          type: integer
+          format: integer64
+        os:
+          type: string
+        processors:
+          type: integer
+        hostname:
+          type: string
+        certificates:
+          type: array
+          items:
+            type: object
+            properties:
+              filename:
+                type: string
+              expires:
+                type: integer
+                format: int64
+
+    Dashboard:
+      type: object
+      properties:
+        snapshot:
+          type: integer
+          format: int64
+        tenants:
+          $ref: '#/components/schemas/TagIntPairList'
+
+    SystemCommandSetLogLevel:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - setloglevel
+        subsystems:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    SystemCommandReload:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - reload
+        subsystems:
+          type: array
+          items:
+            type: string
+            example: these are the SubSystems names retrieve with the GetSubSystemsNamesResult.
+
+    SystemCommandGetLogLevels:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getloglevels
+
+    SystemGetLogLevelsResult:
+      type: object
+      properties:
+        taglist:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+    SystemCommandGetLogLevelNames:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getloglevelnames
+
+    SystemCommandGetSubsystemNames:
+      type: object
+      properties:
+        command:
+          type: string
+          enum:
+            - getsubsystemnames
+
+    SystemCommandGetLogLevelNamesResult:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            type: string
+
+    SystemGetSubSystemNamesResult:
+      type: object
+      properties:
+        taglist:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagValuePair'
+
+paths:
+  /ue/{ue}:
+    get:
+      tags:
+        - UE Locations
+      operationId: getUE
+      summary: Retrieve the last locations of a specific UE.
+      parameters:
+        - in: path
+          name: ue
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Return a list of UE Locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UElocation'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /ap/{serialNumber}:
+    get:
+      tags:
+        - AP Locations
+      operationId: getAP
+      summary: Retrieve AP locations
+      parameters:
+        - in: path
+          name: serialNumber
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Return a list of AP Locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/APlocation'
+
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /apues/{serialNumber}:
+    get:
+      tags:
+        - AP Locations
+      operationId: getAPUEs
+      summary: Retrieve a lits of UEs for an AP
+      parameters:
+        - in: path
+          name: serialNumber
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Return a list of AP Locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UEinfo'
+
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  #########################################################################################
+  ##
+  ## These are endpoints that all services in the OpenWiFi stack must provide
+  ##
+  #########################################################################################
+  /system:
+    post:
+      tags:
+        - System Commands
+      summary: Perform some system wide commands.
+      operationId: systemCommand
+      requestBody:
+        description: Command details
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/SystemCommandSetLogLevel'
+                - $ref: '#/components/schemas/SystemCommandReload'
+                - $ref: '#/components/schemas/SystemCommandGetLogLevels'
+                - $ref: '#/components/schemas/SystemCommandGetLogLevelNames'
+                - $ref: '#/components/schemas/SystemCommandGetSubsystemNames'
+      responses:
+        200:
+          description: Successful command execution
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SystemGetLogLevelsResult'
+                  - $ref: '#/components/schemas/SystemCommandGetLogLevelNamesResult'
+                  - $ref: '#/components/schemas/SystemGetSubSystemNamesResult'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - System Commands
+      summary: Retrieve different values from the running service.
+      operationId: getSystemCommand
+      parameters:
+        - in: query
+          description: Get a value
+          name: command
+          schema:
+            type: string
+            enum:
+              - info
+          required: true
+
+      responses:
+        200:
+          description: Successful command execution
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SystemInfoResults'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'

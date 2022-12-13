@@ -6,6 +6,10 @@
 #include "framework/RESTAPI_WebSocketServer.h"
 #include "framework/RESTAPI_SystemConfiguration.h"
 
+#include "RESTAPI/RESTAPI_ap_handler.h"
+#include "RESTAPI/RESTAPI_apues_handler.h"
+#include "RESTAPI/RESTAPI_ue_handler.h"
+
 namespace OpenWifi {
 
     Poco::Net::HTTPRequestHandler * RESTAPI_ExtRouter(const std::string &Path, RESTAPIHandler::BindingMap &Bindings,
@@ -14,7 +18,10 @@ namespace OpenWifi {
     	return RESTAPI_Router<
 				RESTAPI_system_command,
 				RESTAPI_system_configuration,
-				RESTAPI_webSocketServer
+				RESTAPI_webSocketServer,
+                Arilia::RESTAPI_ue_handler,
+                Arilia::RESTAPI_ap_handler,
+                Arilia::RESTAPI_apues_handler
 				>(Path,Bindings,L, S, TransactionId);
     }
 
@@ -24,7 +31,10 @@ namespace OpenWifi {
     	return RESTAPI_Router_I<
                 RESTAPI_system_command,
                 RESTAPI_system_configuration,
-                RESTAPI_webSocketServer
+                RESTAPI_webSocketServer,
+                Arilia::RESTAPI_ue_handler,
+                Arilia::RESTAPI_ap_handler,
+                Arilia::RESTAPI_apues_handler
                 >(Path,Bindings,L, S, TransactionId);
 	}
 }

@@ -145,7 +145,7 @@ add_executable( owuelocator
 
         src/UELocatorWebSocketClient.cpp src/UELocatorWebSocketClient.h
         src/UI_LOC_WebSocketNotifications.cpp src/UI_LOC_WebSocketNotifications.h
-        src/ar_framework/MicroServicesNames.h src/ar_RESTObjects/RESTAPI_LOCObjects.cpp src/ar_RESTObjects/RESTAPI_LOCObjects.h src/UEAggregator.cpp src/UEAggregator.h)
+        src/ar_framework/MicroServicesNames.h src/ar_RESTObjects/RESTAPI_LOCObjects.cpp src/ar_RESTObjects/RESTAPI_LOCObjects.h src/UEAggregator.cpp src/UEAggregator.h src/RESTAPI/RESTAPI_ue_handler.cpp src/RESTAPI/RESTAPI_ue_handler.h src/RESTAPI/RESTAPI_ap_handler.cpp src/RESTAPI/RESTAPI_ap_handler.h src/RESTAPI/RESTAPI_apues_handler.cpp src/RESTAPI/RESTAPI_apues_handler.h)
 
 if(NOT SMALL_BUILD)
 
