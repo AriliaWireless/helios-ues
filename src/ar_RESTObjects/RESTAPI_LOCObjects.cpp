@@ -11,36 +11,36 @@ using OpenWifi::RESTAPI_utils::field_from_json;
 namespace Arilia::LOCObjects {
 
     void UELocation::to_json(Poco::JSON::Object &Obj) const {
-        field_to_json(Obj,"AP", AP);
+        field_to_json(Obj,"ap", ap);
         field_to_json(Obj,"system", system);
         field_to_json(Obj,"reported", reported);
-        field_to_json(Obj,"BSSID", BSSID);
-        field_to_json(Obj,"SSID", SSID);
+        field_to_json(Obj,"bssid", bssid);
+        field_to_json(Obj,"ssid", ssid);
     }
 
     bool UELocation::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
-            field_from_json(Obj,"AP", AP);
+            field_from_json(Obj,"ap", ap);
             field_from_json(Obj,"system", system);
             field_from_json(Obj,"reported", reported);
-            field_from_json(Obj,"BSSID", BSSID);
-            field_from_json(Obj,"SSID", SSID);
+            field_from_json(Obj,"bssid", bssid);
+            field_from_json(Obj,"ssid", ssid);
             return true;
         } catch (...) {
         }
         return false;
     }
 
-    void UELocationEntry::to_json(Poco::JSON::Object &Obj) const {
-        field_to_json(Obj,"MAC", MAC);
+    void UEEntry::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"ue", ue);
         field_to_json(Obj,"locations", locations);
         field_to_json(Obj,"created", created);
         field_to_json(Obj,"lastReport", lastReport);
     }
 
-    bool UELocationEntry::from_json(const Poco::JSON::Object::Ptr &Obj) {
+    bool UEEntry::from_json(const Poco::JSON::Object::Ptr &Obj) {
         try {
-            field_from_json(Obj,"MAC", MAC);
+            field_from_json(Obj,"ue", ue);
             field_from_json(Obj,"locations", locations);
             field_from_json(Obj,"created", created);
             field_from_json(Obj,"lastReport", lastReport);
@@ -48,6 +48,40 @@ namespace Arilia::LOCObjects {
         } catch (...) {
         }
         return false;
+    }
+
+    void APLocation::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"system", system);
+        field_to_json(Obj,"reported", reported);
+    }
+
+    bool APLocation::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"system", system);
+            field_from_json(Obj,"reported", reported);
+            return true;
+        } catch (...) {
+        }
+        return false;
+
+    }
+
+    void APClients::to_json(Poco::JSON::Object &Obj) const {
+        field_to_json(Obj,"ap", ap);
+        field_to_json(Obj,"location", location);
+        field_to_json(Obj,"clients", clients);
+    }
+
+    bool APClients::from_json(const Poco::JSON::Object::Ptr &Obj) {
+        try {
+            field_from_json(Obj,"ap", ap);
+            field_from_json(Obj,"location", location);
+            field_from_json(Obj,"clients", clients);
+            return true;
+        } catch (...) {
+        }
+        return false;
+
     }
 
 } // Arilia

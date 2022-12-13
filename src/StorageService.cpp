@@ -18,7 +18,7 @@ namespace OpenWifi {
 
 		StorageClass::Start();
 
-        UELocatorDB_ = std::make_unique<Arilia::UELocatorDB>("UELocations", "uel", dbType_,*Pool_, Logger());
+        UELocatorDB_ = std::make_unique<Arilia::UELocatorDB>("ues", "ued", dbType_,*Pool_, Logger());
         UELocatorDB_->Create();
 
 		Archivercallback_ = std::make_unique<Poco::TimerCallback<Archiver>>(Archiver_,&Archiver::onTimer);

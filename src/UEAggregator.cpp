@@ -79,11 +79,11 @@ namespace Arilia {
                                                         BSSID = association["bssid"];
                                                         OpenWifi::Utils::NormalizeMac(BSSID);
                                                     }
-                                                    Arilia::LOCObjects::UELocation  Location{ .AP = Msg->Key,
+                                                    Arilia::LOCObjects::UELocation  Location{ .ap = Msg->Key,
                                                                                        .system = Host,
                                                                                        .reported = OpenWifi::Utils::Now(),
-                                                                                       .BSSID = BSSID,
-                                                                                       .SSID = SSID };
+                                                                                       .bssid = BSSID,
+                                                                                       .ssid = SSID };
 
                                                     std::cout << "Station: " << Station << " AP: " << Msg->Key << " BSSID: "
                                                         <<  BSSID << "  SSID: " << SSID << std::endl;

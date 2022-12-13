@@ -40,31 +40,54 @@ components:
     UElocation:
       type: object
       properties:
-        gw:
+        ap:
           type: string
-        serialNumber:
+        system:
           type: string
-        lastContact:
+        reported:
+          type: integer
+          format: int64
+        bssid:
+          type: string
+        ssid:
+          type: string
+
+    UEEntry:
+      type: object
+      properties:
+        ue:
+          type: string
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/UElocation'
+        created:
+          type: integer
+          format: int64
+        lastReport:
           type: integer
           format: int64
 
     APlocation:
       type: object
       properties:
-        gw:
+        system:
           type: string
-        lastContact:
+        reported:
           type: integer
           format: int64
 
-    UEinfo:
+    APClients:
       type: object
       properties:
-        ue:
+        ap:
           type: string
-        lastContact:
-          type: integer
-          format: int64
+        location:
+          $ref: '#/components/schemas/APlocation'
+        clients:
+          type: array
+          items:
+            $ref: '$'#/components/schemas/UEEntry'
 
     #########################################################################################
     ##
@@ -280,9 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UElocation'
+                $ref: '#/components/schemas/UEEntry'
         400:
           $ref: '#/components/responses/BadRequest'
         403:
@@ -339,7 +360,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UEinfo'
+                  $ref: '#/components/schemas/APClients'
 
         400:
           $ref: '#/components/responses/BadRequest'

@@ -10,14 +10,14 @@
 namespace Arilia {
 
 typedef Poco::Tuple<
-	std::string,    //  MAC
-	std::string,    //  Locations
+	std::string,    //  ue
+	std::string,    //  locations
 	uint64_t,       //  created = 0;
 	uint64_t        //  lastreport = 0;
 	> UELocatorRecordTuple;
 	typedef std::vector <UELocatorRecordTuple> UELocatorRecordTupleList;
 
-	class UELocatorDB : public ORM::DB<UELocatorRecordTuple, Arilia::LOCObjects::UELocationEntry> {
+	class UELocatorDB : public ORM::DB<UELocatorRecordTuple, Arilia::LOCObjects::UEEntry> {
 	  public:
         UELocatorDB( const std::string &name, const std::string &shortname, OpenWifi::DBType T, Poco::Data::SessionPool & P, Poco::Logger &L);
 		virtual ~UELocatorDB() {}
