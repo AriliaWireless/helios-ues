@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(owuelocator VERSION 2.9.0)
+project(ues VERSION 2.9.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -72,7 +72,7 @@ configure_file(src/ow_version.h.in ${PROJECT_SOURCE_DIR}/src/ow_version.h @ONLY)
 
 add_compile_options(-Wall -Wextra)
 
-add_executable( owuelocator
+add_executable( ues
         build
         src/ow_version.h.in
         src/framework/CountryCodes.h
@@ -151,22 +151,21 @@ if(NOT SMALL_BUILD)
 
 endif()
 
-INSTALL(TARGETS owuelocator
+INSTALL(TARGETS ues
         RUNTIME DESTINATION /usr/bin
 )
 
-target_link_libraries(owuelocator PUBLIC
+target_link_libraries(ues PUBLIC
         ${Poco_LIBRARIES}
         ${ZLIB_LIBRARIES})
 
 if(NOT SMALL_BUILD)
-    target_link_libraries(owuelocator PUBLIC
+    target_link_libraries(ues PUBLIC
             ${MySQL_LIBRARIES} ${ZLIB_LIBRARIES}
                 CppKafka::cppkafka
-                nlohmann_json_schema_validator
-                fmt::fmt
+             fmt::fmt
              )
     if(UNIX AND NOT APPLE)
-        target_link_libraries(owuelocator PUBLIC PocoJSON)
+        target_link_libraries(ues PUBLIC PocoJSON)
     endif()
 endif()
